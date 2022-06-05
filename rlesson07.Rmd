@@ -1,12 +1,14 @@
 ---
 title: "Lecture 7: Joint Distribution"
-subtitle: "STA237: Probability, Statistics and Data Analysis I"
-author: Michael J Moon
-output: html_document
+output: 
+  learnr::tutorial:
+    css: css/styles.css
+runtime: shiny_prerendered
 ---
 
 
 ```{r setup, include=FALSE}
+library(learnr)
 library(tidyverse)
 library(ggplot2)
 ```
@@ -18,18 +20,18 @@ Suppose $R$ and $\theta$ are two continuous random variables with the following 
 
 $$R\sim\text{U}(0, 1)\quad\text{and}\quad\theta\sim\text{U}(0, \pi)$$
 
-Let $X=R\cos(\theta)$ and $Y=R\sin(\theta)$. Simulate 1,000 pairs of $(X,Y)$.
+Let $X=R\cos(\theta)$ and $Y=R\sin(\theta)$. Simulate 100,000 pairs of $(X,Y)$.
 
 
-```{r}
-# Write your R codes here.
+```{r simulatej, exercise=TRUE, exercise.lines=15}
+
 ```
 
-## Plotting Simulated Values
+### Plotting Simulated Values
 
 The following code plots a semi circle with radius 1. Add the simulated points $(x_i,y_i)$ for $i=1,\dots,1000$ on to the plot.
 
-```{r fig.asp=2/3}
+```{r plotbase, exercise=TRUE, fig.asp=2/3, exercise.lines=25}
 circlei <- seq(0, pi, 0.01)
 plot(cos(circlei), sin(circlei), type = "l",
      xlab = "x", ylab = "y")
@@ -38,15 +40,10 @@ plot(cos(circlei), sin(circlei), type = "l",
 
 Alternatively, in `ggplot`...
 
-```{r fig.asp=2/3}
+```{r plotgg, exercise=TRUE, fig.asp=2/3, exercise.lines=25}
 ggplot() +
   theme_classic() +
   geom_line(aes(x = cos(circlei), y = sin(circlei))) +
   labs(x = "x", y = "y")
 ```
-
-
-## Knitting a RMarkdown Document
-
-To knit the document, click **Knit** button above the document area or pres **Ctr + Shift + K**. If you wish to render a PDF file, change `output: html_document` at the top of the document to `output:pdf_document`. 
 
