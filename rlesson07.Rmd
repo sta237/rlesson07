@@ -74,7 +74,7 @@ some_table$l
 ```
 
 
-> Using 2D index to extract a column (e.g., `some_table[ , 3]`) returns a vector whereas using 1D index (e.g., `some_table[3]`) or `$` extractor returns a single column data frame. It doesn't affect the codes in most cases but can be a good place to check if you face an unexpected error.
+> Using 2D index to extract a column (e.g., `some_table[ , 3]`) or `$` extractor returns a vector whereas using 1D index (e.g., `some_table[3]`) returns a single column data frame. It doesn't affect the codes in most cases but can be a good place to check if you face an unexpected error.
 
 
 ### Practice
@@ -173,4 +173,4 @@ ggplot(sims, aes(x = X, y = Y)) +
   geom_point(alpha = 0.5) # semi-transparent points
 ```
 
-> Optionally, set `alpha = 0.5` inside `geome_point()` to make the points semi-transparent.
+> Optionally, set `alpha = 0.5` inside `geom_point()` to make the points semi-transparent.
