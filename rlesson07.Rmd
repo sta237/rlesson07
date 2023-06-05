@@ -76,6 +76,40 @@ some_table$l
 
 > Using 2D index to extract a column (e.g., `some_table[ , 3]`) returns a vector whereas using 1D index (e.g., `some_table[3]`) or `$` extractor returns a single column data frame. It doesn't affect the codes in most cases but can be a good place to check if you face an unexpected error.
 
+
+### Practice
+
+In the code chunk below, `some_table` is available for you. 
+
+i. Extract values of `y` from rows where `l` is `TRUE`.
+ii. Extract values of `w` from rows where `l` is `FALSE`.
+iii. Add the five values extracted.
+
+```{r sometable-setup}
+set.seed(237)
+some_table <- data.frame(
+  numbers = 1:5,
+  alphabets = letters[1:5],
+  l = sample(c(T, F), 5, replace = TRUE),
+  y = rpois(5, 100),
+  w = rgeom(5, 1/100)
+)
+```
+
+```{r sometable, exercise=TRUE, exercise.lines=15}
+some_table
+```
+
+```{r sometable-hint-1}
+# extract the values
+some_table$y[some_table$l]
+some_table$w[!some_table$l]
+```
+
+```{r sometable-solution}
+sum(some_table$y[some_table$l]) + sum(some_table$w[!some_table$l])
+```
+
 ## Simulating a joint distribution
 
 Suppose $R$ and $\theta$ are two continuous random variables with the following distributions.
