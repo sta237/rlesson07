@@ -10,40 +10,133 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 library(learnr)
 library(tidyverse)
+set.seed(237)
+```
+
+## R Preparation
+
+### Using a table in R
+
+So far, we have worked with vectors and matrices which can save values of one data type. 
+We can create tables consisting of columns in different data types via `data.frame()` in R.
+
+For example, the data frame below has a column of numbers and a column of characters.
+
+```{r echo=TRUE}
+some_table <- data.frame(
+  numbers = 1:5,
+  alphabets = letters[1:5],
+  l = sample(c(T, F), 5, replace = TRUE),
+  y = rpois(5, 100),
+  w = rgeom(5, 1/100)
+)
+some_table
+```
+
+Many functions in R, including `ggplot()`, are designed to work with data frames. For example, in `ggplot()`,
+the first argument is expected to be a table^[We have been manually bypassing the first argument with `mapping = aes()`.]
+Once we pass in a table, you can define the mappings using the column names. 
+
+```{r echo=TRUE}
 library(ggplot2)
+ggplot(some_table,          # provide the table
+       aes(x = numbers)) +  # map the column `numbers` to x-axis
+  theme_bw() +
+  geom_point(aes(y = ifelse(l, y, w), # draw points using `y` or `w` based on the value of `l`
+                 color = l)) # change color based on the value of `l`
+```
+
+> Specifying aesthetics such as `color`, `size`, `linetype`, `shape`, etc. inside `aes()` changes the specified aesthetics based on the mapped values.
+
+Most multivariate data come in a table format and R makes it easy to work with them.
+
++  You can access elements of a data frame using 2D indexes in the same way you use 2D indexes with matrices.
+
+```{r echo=TRUE}
+some_table[1, ]  # extracting the first row
+some_table[1:3, ]  # extracting the first three rows
+some_table[ , 3] # extracting the third column
+some_table[1, 3:4] # extracting the element in the first row, third and fourth columns
+```
+
+> When you extract multiple columns, the result is still a data frame. 
+
++  On the other hand, using a single positional index behaves differently from a matrix and returns a column.
+
+```{r echo=TRUE}
+some_table[3]   
+```
+
++  You can also extract a column using `$` followed by the column name.
+
+```{r echo=TRUE}
+some_table$l
 ```
 
 
-## Simulating Joint Distributions
+> Using 2D index to extract a column (e.g., `some_table[ , 3]`) returns a vector whereas using 1D index (e.g., `some_table[3]`) or `$` extractor returns a single column data frame. It doesn't affect the codes in most cases but can be a good place to check if you face an unexpected error.
+
+## Simulating a joint distribution
 
 Suppose $R$ and $\theta$ are two continuous random variables with the following distributions.
 
-$$R\sim\text{U}(0, 1)\quad\text{and}\quad\theta\sim\text{U}(0, \pi)$$
+$$R\sim\text{U}(0, 1)\quad\text{and}\quad\theta\sim\text{U}(0, 2\pi)$$
 
-Let $X=R\cos(\theta)$ and $Y=R\sin(\theta)$. Simulate 100,000 pairs of $(X,Y)$.
+Let $X=R\cos(\theta)$ and $Y=R\sin(\theta)$. 
+
+i. Simulate 5,000 pairs of $(X,Y)$.
+ii. Create a data frame of columns `R`, `theta`, `X`, `Y`.
+iii. Plot `X` vs. `Y` as points using the data frame.
 
 
-```{r simulatej, exercise=TRUE, exercise.lines=15}
-
+```{r jsim, exercise=TRUE, exercise.lines=15}
+N <- 5000
 ```
 
-### Plotting Simulated Values
+```{r jsim-hint-1}
+N <- 5000
+R <- runif(N)
+theta <- runif(N, max = 2 * pi) # pi is a predefined constant in R
+```
 
-The following code plots a semi circle with radius 1. Add the simulated points $(x_i,y_i)$ for $i=1,\dots,1000$ on to the plot.
-
-```{r plotbase, exercise=TRUE, fig.asp=2/3, exercise.lines=25}
-circlei <- seq(0, pi, 0.01)
-plot(cos(circlei), sin(circlei), type = "l",
-     xlab = "x", ylab = "y")
+```{r jsim-hint-2}
+N <- 5000
+R <- runif(N)
+theta <- runif(N, max = 2 * pi) # pi is a predefined constant in R
+sims <- data.frame(
+  R = R, theta = theta,
+  X = R * cos(theta), Y = R * sin(theta)
+)
 ```
 
 
-Alternatively, in `ggplot`...
-
-```{r plotgg, exercise=TRUE, fig.asp=2/3, exercise.lines=25}
-ggplot() +
+```{r jsim-hint-3}
+N <- 5000
+R <- runif(N)
+theta <- runif(N, max = 2 * pi) # pi is a predefined constant in R
+sims <- data.frame(
+  R = R, theta = theta,
+  X = R * cos(theta), Y = R * sin(theta)
+)
+ggplot(sims, aes(x = X, y = Y)) +
   theme_classic() +
-  geom_line(aes(x = cos(circlei), y = sin(circlei))) +
-  labs(x = "x", y = "y")
+  geom_point()
 ```
 
+```{r jsim-hint-4}
+N <- 5000
+R <- runif(N)
+theta <- runif(N, max = 2 * pi) # pi is a predefined constant in R
+sims <- data.frame(
+  R = R, theta = theta,
+  X = R * cos(theta), Y = R * sin(theta)
+)
+ggplot(sims, aes(x = X, y = Y)) +
+  theme_void() +
+  geom_vline(xintercept = 0, linetype = "dotted") +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  coord_equal() + # plot x and y axis at equal scales
+  geom_point(alpha = 0.5) # semi-transparent points
+```
+
+> Optionally, set `alpha = 0.5` inside `geome_point()` to make the points semi-transparent.
